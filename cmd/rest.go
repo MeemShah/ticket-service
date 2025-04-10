@@ -5,6 +5,7 @@ import (
 	"ticket-service/config"
 	web "ticket-service/controller"
 	"ticket-service/controller/handlers"
+	"ticket-service/controller/middlewares"
 	"ticket-service/controller/utils"
 	"ticket-service/logger"
 	"ticket-service/ticket"
@@ -33,13 +34,14 @@ func serveRest(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	cache:=cache.NewCache(readRedisClinet,writeRedisClinet)
+	cache := cache.NewCache(readRedisClinet, writeRedisClinet)
 
-	ticket_svc := ticket.NewService(cnf,cache)
+	ticket_svc := ticket.NewService(cnf, cache)
 
 	handlers := handlers.NewHandlers(cnf, ticket_svc)
 
-	server := web.NewServer(cnf, handlers)
+	middleware := middlewares.NewMiddleware(cnf, cache)
+	server := web.NewServer(cnf, handlers, middleware)
 	server.Run()
 	server.Wg.Wait()
 

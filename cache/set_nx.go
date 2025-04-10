@@ -2,7 +2,6 @@ package cache
 
 import (
 	"context"
-	"fmt"
 	"time"
 )
 
@@ -11,9 +10,6 @@ func (c *cache) SetNX(ctx context.Context, lockKey, lockValue string, lockTTL ti
 	if err != nil {
 		return false, err
 	}
-	if !ok {
-		return false, fmt.Errorf("key is locked, try again later")
-	}
-	
-	return true, nil
+
+	return ok, nil
 }

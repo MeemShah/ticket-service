@@ -32,30 +32,21 @@ func (m *Middleware) AuthenticateTicket(next http.Handler) http.Handler {
 		lockKey := LockPrifix + ticketID
 		lockValue := uuid.New().String()
 		lockTTL := time.Duration(m.cnf.HoldTicktViewInSeconds) * time.Second
-		m.Cache.SetNX(r.Context(), lockKey, lockValue, lockTTL)
 
-		// release lock after function execution if locked
-		defer func() {
-			val, err := m.Cache.Get(r.Context(), lockKey)
-			if err == nil && val == lockValue {
-				_ = m.Cache.Del(r.Context(), lockKey)
-			}
-		}()
-
-		tucketKey := KeyPrifix + ticketID
-		status, err := m.Cache.Get(r.Context(), tucketKey)
+		ok, err := m.Cache.SetNX(r.Context(), lockKey, lockValue, lockTTL)
 		if err != nil {
-			slog.Error("failed to get ticket", logger.Extra(map[string]any{
+			slog.Error("failed to acquire lock", logger.Extra(map[string]any{
 				"error":     err.Error(),
-				"ticketKey": tucketKey,
+				"ticket_id": ticketID,
+				"lock_key":  lockKey,
 			}))
-			utils.SendError(w, http.StatusBadRequest, "Something went wrong", nil)
+
+			utils.SendError(w, http.StatusInternalServerError, "Internal Server Error: Could not acquire lock", nil)
 			return
 		}
 
-		// reject request if processed by others
-		if status != StatusAvailable {
-			utils.SendError(w, http.StatusBadRequest, "already checking by others", nil)
+		if !ok {
+			utils.SendError(w, http.StatusTooManyRequests, "Someone is already processing this ticket", nil)
 			return
 		}
 

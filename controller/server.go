@@ -11,15 +11,17 @@ import (
 )
 
 type Server struct {
-	handlers *handlers.Handlers
-	cnf      *config.Config
-	Wg       sync.WaitGroup
+	handlers   *handlers.Handlers
+	cnf        *config.Config
+	Wg         sync.WaitGroup
+	middleware *middlewares.Middleware
 }
 
-func NewServer(cnf *config.Config, handlers *handlers.Handlers) *Server {
+func NewServer(cnf *config.Config, handlers *handlers.Handlers, middleware *middlewares.Middleware) *Server {
 	server := &Server{
-		cnf:      cnf,
-		handlers: handlers,
+		cnf:        cnf,
+		handlers:   handlers,
+		middleware: middleware,
 	}
 	return server
 }

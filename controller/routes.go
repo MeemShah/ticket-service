@@ -17,6 +17,7 @@ func (server *Server) initRoutes(mux *http.ServeMux, manager *middlewares.Manage
 		"GET /get-ticket",
 		manager.With(
 			http.HandlerFunc(server.handlers.GetTicket),
+			server.middleware.AuthenticateTicket,
 		),
 	)
 }
