@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"log"
 	"log/slog"
 	"net/http"
 	"ticket-service/controller/utils"
@@ -46,10 +47,12 @@ func (m *Middleware) AuthenticateTicket(next http.Handler) http.Handler {
 		}
 
 		if !ok {
+			log.Println("Someone is already processing this ticket. user-id: ", userID)
 			utils.SendError(w, http.StatusTooManyRequests, "Someone is already processing this ticket", nil)
 			return
 		}
 
+		log.Println("ticket processing. for user-id: ", userID)
 		next.ServeHTTP(w, r)
 	})
 }

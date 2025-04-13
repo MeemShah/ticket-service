@@ -9,13 +9,14 @@ import (
 
 var (
 	RootCmd = &cobra.Command{
-		Use:   "data-syncer",
-		Short: "data-syncer server binary",
+		Use:   "ticket-service",
+		Short: "ticket-service server binary",
 	}
 )
 
 func init() {
 	RootCmd.AddCommand(serveRestCmd)
+	RootCmd.AddCommand(TestRestCmd)
 }
 
 func Execute() {

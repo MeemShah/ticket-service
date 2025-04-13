@@ -34,6 +34,9 @@ prepare: install-proto-deps install-dev-deps install-deps tidy
 dev: prepare
 	air serve-rest
 
+test-ticket: prepare
+	air test-ticket
+
 build: install-deps
 	go build -o ${TARGET} ${MAIN}
 
