@@ -6,7 +6,13 @@ import (
 )
 
 func (handlers *Handlers) GetTicket(w http.ResponseWriter, r *http.Request) {
-	utils.SendJson(w, http.StatusOK, map[string]any{
-		"success": true,
-	})
+	ticketID := r.Header.Get(TicketID)
+
+	ticket, err := handlers.ticketSvc.GetTicket(r.Context(), ticketID)
+	if err != nil {
+		utils.SendError(w, http.StatusInternalServerError, "failed to get ticket details", nil)
+		return
+	}
+
+	utils.SendData(w, ticket)
 }

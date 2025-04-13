@@ -20,4 +20,11 @@ func (server *Server) initRoutes(mux *http.ServeMux, manager *middlewares.Manage
 			server.middleware.AuthenticateTicket,
 		),
 	)
+
+	mux.Handle(
+		"GET /cancle-viewing",
+		manager.With(
+			http.HandlerFunc(server.handlers.CancleView),
+		),
+	)
 }

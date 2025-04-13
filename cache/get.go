@@ -15,5 +15,6 @@ func (c *cache) Get(ctx context.Context, key string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	return data, nil
 }
