@@ -22,9 +22,9 @@ func (server *Server) initRoutes(mux *http.ServeMux, manager *middlewares.Manage
 	)
 
 	mux.Handle(
-		"GET /cancle-viewing",
+		"DELETE /cancle-viewing",
 		manager.With(
-			http.HandlerFunc(server.handlers.CancleView),
+			http.HandlerFunc(server.handlers.CancleViewing),
 		),
 	)
 }
