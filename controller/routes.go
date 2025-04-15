@@ -22,9 +22,16 @@ func (server *Server) initRoutes(mux *http.ServeMux, manager *middlewares.Manage
 	)
 
 	mux.Handle(
-		"DELETE /cancle-viewing",
+		"DELETE /cancle-processing",
 		manager.With(
-			http.HandlerFunc(server.handlers.CancleViewing),
+			http.HandlerFunc(server.handlers.CancleProcessing),
+		),
+	)
+
+	mux.Handle(
+		"POST /create-ticket",
+		manager.With(
+			http.HandlerFunc(server.handlers.Createtickets),
 		),
 	)
 }

@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"log/slog"
 	"ticket-service/cache"
 	"ticket-service/config"
 	web "ticket-service/controller"
@@ -8,6 +9,7 @@ import (
 	"ticket-service/controller/middlewares"
 	"ticket-service/controller/utils"
 	"ticket-service/logger"
+	repo "ticket-service/repository"
 	"ticket-service/ticket"
 
 	"github.com/spf13/cobra"
@@ -36,7 +38,26 @@ func serveRest(cmd *cobra.Command, args []string) error {
 
 	cache := cache.NewCache(readRedisClinet, writeRedisClinet)
 
-	ticket_svc := ticket.NewService(cnf, cache)
+	db, err := repo.NewDB(cnf.DB)
+	if err != nil {
+		slog.Error("Failed to Connect with Database:", logger.Extra(map[string]any{
+			"error": err.Error(),
+		}))
+		return err
+	}
+	defer repo.CloseDB(db)
+
+	err = repo.MigrateDB(db.Db, cnf.MigrationSource)
+	if err != nil {
+		slog.Error("Failed to Migrate Database:", logger.Extra(map[string]any{
+			"error": err.Error(),
+		}))
+		return err
+	}
+
+	ticketRepo := repo.NewTicketRepo(db)
+
+	ticket_svc := ticket.NewService(cnf, cache, ticketRepo)
 
 	handlers := handlers.NewHandlers(cnf, ticket_svc)
 

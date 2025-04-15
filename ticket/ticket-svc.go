@@ -5,13 +5,15 @@ import (
 )
 
 type service struct {
-	cnf *config.Config
-	cache Cache
+	cnf        *config.Config
+	cache      Cache
+	ticketRepo TicketRepo
 }
 
-func NewService(cnf *config.Config, cache Cache) Service {
+func NewService(cnf *config.Config, cache Cache, ticketRepo TicketRepo) Service {
 	return &service{
-		cnf: cnf,
-		cache: cache,
+		cnf:        cnf,
+		cache:      cache,
+		ticketRepo: ticketRepo,
 	}
 }

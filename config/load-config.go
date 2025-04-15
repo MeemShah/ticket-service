@@ -34,16 +34,16 @@ func LoadConfig() error {
 		EnableSSLMode:          viper.GetBool("ENABLE_SSL_MODE"),
 		HoldTicktViewInSeconds: viper.GetInt("HOLD_TICKET_VIEW_IN_SECONDS"),
 
-		//MigrationSource:   viper.GetString("MIGRATION_SOURCE"),
-		// DB: &DBConfig{
-		// 	Host:                 viper.GetString("DB_HOST"),
-		// 	Port:                 viper.GetInt("DB_PORT"),
-		// 	Name:                 viper.GetString("DB_NAME"),
-		// 	User:                 viper.GetString("DB_USER"),
-		// 	Password:             viper.GetString("DB_PASS"),
-		// 	MaxIdleTimeInMinutes: viper.GetInt("MAX_IDLE_TIME_IN_MINUTE"),
-		// 	EnableSSLMode:        viper.GetBool("ENABLE_SSL_MODE"),
-		// },
+		MigrationSource: viper.GetString("MIGRATION_SOURCE"),
+		DB: &DBConfig{
+			Host:                 viper.GetString("DB_HOST"),
+			Port:                 viper.GetInt("DB_PORT"),
+			Name:                 viper.GetString("DB_NAME"),
+			User:                 viper.GetString("DB_USER"),
+			Password:             viper.GetString("DB_PASS"),
+			MaxIdleTimeInMinutes: viper.GetInt("MAX_IDLE_TIME_IN_MINUTE"),
+			EnableSSLMode:        viper.GetBool("ENABLE_SSL_MODE"),
+		},
 	}
 
 	v := validator.New()

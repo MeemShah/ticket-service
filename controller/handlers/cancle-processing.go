@@ -7,7 +7,7 @@ import (
 
 const TicketID = "ticket-id"
 
-func (h *Handlers) CancleViewing(w http.ResponseWriter, r *http.Request) {
+func (h *Handlers) CancleProcessing(w http.ResponseWriter, r *http.Request) {
 	ticketId := r.Header.Get(TicketID)
 
 	if ticketId == "" {
