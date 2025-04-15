@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  app:
+    name: ticket-service
+    container_name: ticket-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+    environment:
+      MODE: debug
+      SERVICE_NAME: ticket-service
+      HTTP_PORT: 5001
+      JWT_SECREAT: H656H6KH56K46KK4644654Y65YI6Y5Y
+      READ_REDIS_URL: redis://:admin@127.0.0.1:6379
+      WRITE_REDIS_URL: redis://:admin@127.0.0.1:6379
+      ENABLE_SSL_MODE: "false"
+      MAX_IDLE_TIME_IN_MINUT: "60"
+      HOLD_TICKET_VIEW_IN_SECONDS: "120"
+      DB_HOST: 127.0.0.1
+      DB_PORT: "5432"
+      DB_NAME: tickets
+      DB_USER: root
+      DB_PASS: admin
+      MAX_IDLE_TIME_IN_MINUTE: "60"
+
+      MIGRATION_SOURCE: ./migrations

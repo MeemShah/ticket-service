@@ -1,7 +1,7 @@
 package middlewares
 
 import (
-	"log"
+	"context"
 	"log/slog"
 	"net/http"
 	"ticket-service/controller/utils"
@@ -10,9 +10,13 @@ import (
 )
 
 const (
+	TicketIDKey contextKey = "ticket-id"
+	UserIdKey   contextKey = "user-id"
+)
+
+const (
 	TicketID   = "ticket-id"
 	UserID     = "user-id"
-	KeyPrifix  = "ticket: "
 	LockPrifix = "lock: "
 
 	StatusAvailable  = "AVAILABLE"
@@ -29,9 +33,18 @@ func (m *Middleware) AuthenticateTicket(next http.Handler) http.Handler {
 			return
 		}
 
-		// apply lock machanism
 		lockKey := LockPrifix + ticketID
 		lockTTL := time.Duration(m.cnf.HoldTicktViewInSeconds) * time.Second
+
+		bookedBy, err := m.Cache.Get(r.Context(), lockKey)
+		if err == nil {
+			if bookedBy == userID {
+				ctx := context.WithValue(r.Context(), TicketIDKey, ticketID)
+				ctx = context.WithValue(ctx, UserIdKey, userID)
+				next.ServeHTTP(w, r.WithContext(ctx))
+				return
+			}
+		}
 
 		ok, err := m.Cache.SetNX(r.Context(), lockKey, userID, lockTTL)
 		if err != nil {
@@ -47,12 +60,12 @@ func (m *Middleware) AuthenticateTicket(next http.Handler) http.Handler {
 		}
 
 		if !ok {
-			log.Println("Someone is already processing this ticket. user-id: ", userID)
-			utils.SendError(w, http.StatusTooManyRequests, "Someone is already processing this ticket", nil)
+			utils.SendError(w, http.StatusLocked, "Someone is already viewing this ticket", nil)
 			return
 		}
 
-		log.Println("ticket processing. for user-id: ", userID)
-		next.ServeHTTP(w, r)
+		ctx := context.WithValue(r.Context(), TicketIDKey, ticketID)
+		ctx = context.WithValue(ctx, UserIdKey, userID)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

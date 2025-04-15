@@ -22,6 +22,13 @@ func (server *Server) initRoutes(mux *http.ServeMux, manager *middlewares.Manage
 	)
 
 	mux.Handle(
+		"GET /get-tickets",
+		manager.With(
+			http.HandlerFunc(server.handlers.GetTickets),
+		),
+	)
+
+	mux.Handle(
 		"DELETE /cancle-processing",
 		manager.With(
 			http.HandlerFunc(server.handlers.CancleProcessing),
@@ -32,6 +39,14 @@ func (server *Server) initRoutes(mux *http.ServeMux, manager *middlewares.Manage
 		"POST /create-ticket",
 		manager.With(
 			http.HandlerFunc(server.handlers.Createtickets),
+		),
+	)
+
+	mux.Handle(
+		"POST /confirm-ticket",
+		manager.With(
+			http.HandlerFunc(server.handlers.ConfirmTicket),
+			server.middleware.AuthenticateTicket,
 		),
 	)
 }

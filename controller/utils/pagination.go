@@ -28,7 +28,7 @@ const (
 	searchKey        = "search"
 	sortByKey        = "sortBy"
 	sortOrderKey     = "sortOrder"
-	defaultSortBy    = "created_at"
+	defaultSortBy    = "id"
 	defaultSortOrder = "desc"
 )
 
