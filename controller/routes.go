@@ -39,6 +39,7 @@ func (server *Server) initRoutes(mux *http.ServeMux, manager *middlewares.Manage
 		"POST /create-ticket",
 		manager.With(
 			http.HandlerFunc(server.handlers.Createtickets),
+			server.middleware.AuthenticateJWT,
 		),
 	)
 
