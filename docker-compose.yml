@@ -2,7 +2,6 @@ version: "3.9"
 
 services:
   app:
-    name: ticket-service
     container_name: ticket-service
     build:
       context: .
@@ -14,12 +13,15 @@ services:
       SERVICE_NAME: ticket-service
       HTTP_PORT: 5001
       JWT_SECREAT: H656H6KH56K46KK4644654Y65YI6Y5Y
-      READ_REDIS_URL: redis://:admin@127.0.0.1:6379
-      WRITE_REDIS_URL: redis://:admin@127.0.0.1:6379
+
+      READ_REDIS_URL: redis://:admin@172.16.21.62:6379
+      WRITE_REDIS_URL: redis://:admin@172.16.21.62:6379
+
       ENABLE_SSL_MODE: "false"
       MAX_IDLE_TIME_IN_MINUT: "60"
       HOLD_TICKET_VIEW_IN_SECONDS: "120"
-      DB_HOST: 127.0.0.1
+
+      DB_HOST: 172.16.21.62
       DB_PORT: "5432"
       DB_NAME: tickets
       DB_USER: root
